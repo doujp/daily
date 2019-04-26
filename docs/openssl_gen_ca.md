@@ -1,6 +1,7 @@
 ## openssl 证书操作命令 
 
 [摘自](https://www.cnblogs.com/interdrp/p/4881116.html)
+[OpenSSL Certificate Authority](https://jamielinux.com/docs/openssl-certificate-authority/index.html)
 
 ### 生成Self Signed证书
 
@@ -63,7 +64,7 @@
 ### 去掉key的密码保护
 
 ```
-有时候每次都要输入密码太繁琐了,可以把Key的保护密码去掉
+# 有时候每次都要输入密码太繁琐了,可以把Key的保护密码去掉
 > openssl rsa -in myserver.key -out server.key.insecure
 ```
 
