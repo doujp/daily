@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hash Test</title>
+</head>
+<body>
+    <a href="#1">#1</a>
+    <a href="#2">#2</a>
+    <div id="content"></div>
+    <script type='text/js-template' class="test" id="1">第一页</script>
+    <script type='text/js-template' class="test" id="2">第二页</script>
+    <script type="text/javascript">
+        //1、选取元素
+        var aElm=document.getElementsByTagName('a');
+        var array=[].slice.call(aElm)
+        var content=document.getElementById('content')
+        //2、特性检测，如果支持history模式就用history，否则用hash模式
+        if (history&&history.pushState) {
+            window.addEventListener('popstate',handlePage);
+            //劫持a元素的click事件，主要是为了更新history.state的状态以及替换url，当点击url跳转时先执行onclick再触发popstate
+            array.forEach(function(v){
+                v.onclick=function(event){
+                    var path=event.target.hash.split("#")[1];
+                    var newUrl=location.href.split('#')[0]+'\/'+path;
+                    history.pushState({current:path},null,newUrl)
+                }
+            })
+        } else {
+            window.addEventListener('hashchange',handlePage);
+        }
+             //3、统一使用handlePage作为两种模式的事件处理器
+        function handlePage(){
+            if (history&&history.pushState) {
+                var current=history.state&&history.state.current||'1';
+                render(current)
+            } else {
+                var hash=location.hash||'#1';
+                render(hash,true)
+            }
+            function render(selector,isHashMode){
+                var hashMode=isHashMode&&true;
+                var select='';
+                if (hashMode) {
+                    select=selector.split('#')[1];
+                } else {
+                    select=selector||history.state.current
+                }
+                var toPage=document.getElementById(select);
+                content.innerHTML=toPage.innerHTML;
+            }
+        }
+        handlePage();
+    </script>
+</body>
+</html>
